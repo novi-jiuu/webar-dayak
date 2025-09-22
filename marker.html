@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>WebAR Marker</title>
+  <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ar.js@3.3.2/aframe/build/aframe-ar.js"></script>
+  <style>
+    #ui {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+    }
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 6px;
+      background: #ff9800;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <a-scene embedded arjs>
+    <a-assets>
+      <!-- Model & Audio -->
+      <a-asset-item id="rumah-sebujit" src="assets/rumah_sebujit.glb"></a-asset-item>
+      <a-asset-item id="rumah-jagoi" src="assets/rumah_jagoi.glb"></a-asset-item>
+      <audio id="narasi-sebujit" src="assets/narasi_sebujit.mp3"></audio>
+      <audio id="narasi-jagoi" src="assets/narasi_jagoi.mp3"></audio>
+      <audio id="musik-dayak" src="assets/dayak.mp3"></audio>
+    </a-assets>
+
+    <!-- Marker Sebujit -->
+    <a-marker type="pattern" url="assets/marker_sebujit.patt"
+      emitevents="true"
+      id="marker-sebujit">
+      <a-entity gltf-model="#rumah-sebujit" scale="0.4 0.4 0.4"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 15000; easing: linear">
+      </a-entity>
+    </a-marker>
+
+    <!-- Marker Jagoi -->
+    <a-marker type="pattern" url="assets/marker_jagoi.patt"
+      emitevents="true"
+      id="marker-jagoi">
+      <a-entity gltf-model="#rumah-jagoi" scale="0.4 0.4 0.4"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 15000; easing: linear">
+      </a-entity>
+    </a-marker>
+
+    <a-entity camera></a-entity>
+  </a-scene>
+
+  <div id="ui">
+    <button onclick="window.location.href='index.html'">⬅ Kembali</button>
+  </div>
+
+  <script>
+    const narasiSebujit = document.getElementById("narasi-sebujit");
+    const narasiJagoi = document.getElementById("narasi-jagoi");
+    const musikDayak = document.getElementById("musik-dayak");
+
+    const markerSebujit = document.querySelector("#marker-sebujit");
+    const markerJagoi = document.querySelector("#marker-jagoi");
+
+    markerSebujit.addEventListener("markerFound", () => {
+      musikDayak.play();
+      narasiSebujit.play();
+    });
+    markerSebujit.addEventListener("markerLost", () => {
+      musikDayak.pause(); musikDayak.currentTime = 0;
+      narasiSebujit.pause(); narasiSebujit.currentTime = 0;
+    });
+
+    markerJagoi.addEventListener("markerFound", () => {
+      musikDayak.play();
+      narasiJagoi.play();
+    });
+    markerJagoi.addEventListener("markerLost", () => {
+      musikDayak.pause(); musikDayak.currentTime = 0;
+      narasiJagoi.pause(); narasiJagoi.currentTime = 0;
+    });
+  </script>
+</body>
+</html>
